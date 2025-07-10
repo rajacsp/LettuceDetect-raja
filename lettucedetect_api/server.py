@@ -46,20 +46,17 @@ async def init_detector(app: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(lifespan=init_detector)
-detector_lock = asyncio.Lock()
 
 
 async def run_detector_safe(request: DetectionRequest, output_format: str) -> dict:
     """Run detector safely in a async environment without blocking."""
-    async with detector_lock:
-        preds = await run_in_threadpool(
-            detector.predict,
-            context=request.contexts,
-            question=request.question,
-            answer=request.answer,
-            output_format=output_format,
-        )
-    return preds
+    return await run_in_threadpool(
+        detector.predict,
+        context=request.contexts,
+        question=request.question,
+        answer=request.answer,
+        output_format=output_format,
+    )
 
 
 @app.post(

@@ -35,19 +35,18 @@ def _argparse() -> dict:
 def _run_fastapi(args: dict) -> None:
     scripts_folder = pathlib.Path(__file__).parent.resolve()
     repo_folder = scripts_folder.parent
-    api_folder = repo_folder / "lettucedetect_api"
     env = os.environ.copy()
     env["LETTUCEDETECT_MODEL"] = args.model
     env["LETTUCEDETECT_METHOD"] = args.method
     if args.mode == "dev":
-        # Needed for fastapi to be able to import directly from the repository.
+        # Needed for uvicorn to be able to import directly from the repository.
         env["PYTHONPATH"] = env.get("PYTHONPATH", "") + os.pathsep + str(repo_folder)
-        fastapi_cmd = ["fastapi", "dev", api_folder / "server.py"]
+        uvicorn_cmd = ["uvicorn", "lettucedetect_api.server:app", "--reload"]
     else:
-        fastapi_cmd = ["fastapi", "run", api_folder / "server.py"]
+        uvicorn_cmd = ["uvicorn", "lettucedetect_api.server:app"]
     try:
         # Ignore S603: Validate input to run method. False positive.
-        subprocess.run(fastapi_cmd, env=env, cwd=repo_folder)  # noqa: S603
+        subprocess.run(uvicorn_cmd, env=env, cwd=repo_folder)  # noqa: S603
     except KeyboardInterrupt:
         pass
 

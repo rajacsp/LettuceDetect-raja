@@ -37,15 +37,16 @@ dev = [
     "ruff>=0.0.270",
 ]
 api = [
-    "fastapi[standard]>=0.115",
-    "pydantic-settings>=2.8.0",
-    "httpx>=0.28"
+    "fastapi>=0.115.1",
+    "pydantic-settings>=2.8.1",
+    "httpx>=0.28.0",
+    "uvicorn[standard]>=0.30.0"
 ]
 
-[tool.setuptools]
-packages = ["lettucedetect", "lettucedetect_api"]
+[tool.setuptools.packages.find]
+include = ["lettucedetect*"]
 
-[tool.pytest]
+[tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = "test_*_pytest.py"
 
